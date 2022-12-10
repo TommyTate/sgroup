@@ -15,6 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String _userToDo = '';
+  String _userTimeToDo = '';
   List<ToDoListModel> todoList = []; //Делаем список типа ToDoListModel
   final Future<SharedPreferences> _prefs = SharedPreferences
       .getInstance(); //Объявляем переменную для извлечения строк из shared Preferences
@@ -68,6 +69,7 @@ class _HomeState extends State<Home> {
                       child: Card(
                         child: ListTile(
                           title: Text(global.taskList[index].title),
+                          subtitle: Text(global.taskList[index].time),
                           trailing: IconButton(
                               icon: Icon(Icons.delete_forever_rounded,
                                   color: Colors.deepOrangeAccent),
@@ -103,12 +105,19 @@ class _HomeState extends State<Home> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Добавить элемент'),
-                    content: TextField(
+                    title: Text('Добавить дело'),
+                    content: Container( 
+                    height: 100.0,
+                    child: Column(children: [TextField(
                       onChanged: (String value) {
                         _userToDo = value;
                       },
                     ),
+                    TextField(
+                      onChanged: (String value) {
+                        _userTimeToDo = value;
+                      },
+                    ),]),),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
@@ -116,7 +125,7 @@ class _HomeState extends State<Home> {
 
                             setState(() {
                               global.taskList
-                                  .add(ToDoListModel(title: _userToDo));
+                                  .add(ToDoListModel(title: _userToDo, time: _userTimeToDo));
                             });
                             saveToDoItemsToLocalBase(global
                                 .taskList); //Затем сохраняем обновленный список в SharedPreferences
