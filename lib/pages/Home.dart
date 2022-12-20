@@ -14,8 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TimeOfDay time = TimeOfDay(hour: 10, minute: 30);
   String _userToDo = '';
-  String _userTimeToDo = '';
   List<ToDoListModel> todoList = []; //Делаем список типа ToDoListModel
   final Future<SharedPreferences> _prefs = SharedPreferences
       .getInstance(); //Объявляем переменную для извлечения строк из shared Preferences
@@ -49,6 +49,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
@@ -69,7 +73,7 @@ class _HomeState extends State<Home> {
                       child: Card(
                         child: ListTile(
                           title: Text(global.taskList[index].title),
-                          subtitle: Text(global.taskList[index].time),
+                          subtitle: Text('$hours:$minutes'),
                           trailing: IconButton(
                               icon: Icon(Icons.delete_forever_rounded,
                                   color: Colors.deepOrangeAccent),
@@ -107,17 +111,27 @@ class _HomeState extends State<Home> {
                   return AlertDialog(
                     title: Text('Добавить дело'),
                     content: Container( 
-                    height: 100.0,
+                    height: 150.0,
                     child: Column(children: [TextField(
                       onChanged: (String value) {
                         _userToDo = value;
                       },
                     ),
-                    TextField(
-                      onChanged: (String value) {
-                        _userTimeToDo = value;
-                      },
-                    ),]),),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      child: Text('Select Time'),
+                      onPressed: () async {
+                        TimeOfDay? newTime = await showTimePicker(
+                          context: context,
+                          initialTime: time,
+                        );
+                        if (newTime == null) return;
+                        setState(() => time = newTime);
+                      }
+                    ),
+                  ]
+                ),
+              ),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
@@ -125,7 +139,7 @@ class _HomeState extends State<Home> {
 
                             setState(() {
                               global.taskList
-                                  .add(ToDoListModel(title: _userToDo, time: _userTimeToDo));
+                                  .add(ToDoListModel(title: _userToDo, hour: hours, minute: minutes));
                             });
                             saveToDoItemsToLocalBase(global
                                 .taskList); //Затем сохраняем обновленный список в SharedPreferences

@@ -2,15 +2,17 @@ import 'dart:convert';
 
 class ToDoListModel {
   String title = '';
-  String time = '';
+  String hour = '';
+  String minute = '';
 
-  ToDoListModel({this.title = '', this.time = ''});
+  ToDoListModel({this.title = '', this.hour= '', this.minute = ''});
 
   factory ToDoListModel.fromJson(Map<String, dynamic> parsedJson) =>
-      ToDoListModel(time: parsedJson['time'], title: parsedJson['title'] ?? null);
+      ToDoListModel(hour: parsedJson['hour'], minute: parsedJson['minute'], title: parsedJson['title'] ?? null);
   static Map<String, dynamic> toMap(ToDoListModel toDoList) => {
         'title': toDoList.title,
-        'time': toDoList.time,
+        'hour': toDoList.hour,
+        'minute': toDoList.minute,
       };
 
   static String encode(List<ToDoListModel> list) => json.encode(
