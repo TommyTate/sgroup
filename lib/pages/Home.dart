@@ -16,6 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TimeOfDay time = TimeOfDay(hour: 10, minute: 30);
   String _userToDo = '';
+  String _userTimeToDo = '';
   List<ToDoListModel> todoList = []; //Делаем список типа ToDoListModel
   final Future<SharedPreferences> _prefs = SharedPreferences
       .getInstance(); //Объявляем переменную для извлечения строк из shared Preferences
@@ -73,7 +74,13 @@ class _HomeState extends State<Home> {
                       child: Card(
                         child: ListTile(
                           title: Text(global.taskList[index].title),
-                          subtitle: Text('$hours:$minutes'),
+                          subtitle: Row(
+                            children: [
+                              Text(global.taskList[index].hour),
+                              Text(':'),
+                              Text(global.taskList[index].minute)
+                            ],
+                          ),
                           trailing: IconButton(
                               icon: Icon(Icons.delete_forever_rounded,
                                   color: Colors.deepOrangeAccent),
@@ -125,8 +132,6 @@ class _HomeState extends State<Home> {
                           context: context,
                           initialTime: time,
                         );
-                        if (newTime == null) return;
-                        setState(() => time = newTime);
                       }
                     ),
                   ]
