@@ -51,8 +51,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minutes = time.minute.toString().padLeft(2, '0');
+    var hours = time.hour.toString().padLeft(2, '0');
+    var minutes = time.minute.toString().padLeft(2, '0');
 
     return Scaffold(
       backgroundColor: Colors.grey[900],
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
                   return AlertDialog(
                     title: Text('Добавить дело'),
                     content: Container( 
-                    height: 150.0,
+                    height: 120.0,
                     child: Column(children: [TextField(
                       onChanged: (String value) {
                         _userToDo = value;
@@ -126,12 +126,18 @@ class _HomeState extends State<Home> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      child: Text('Select Time'),
+                      child: Text('Выбрать время'),
                       onPressed: () async {
                         TimeOfDay? newTime = await showTimePicker(
                           context: context,
                           initialTime: time,
                         );
+                        if (newTime == null) return;
+                        setState(() {
+                          time = newTime;
+                          hours = time.hour.toString().padLeft(2, '0');
+                          minutes = time.minute.toString().padLeft(2, '0');
+                        });
                       }
                     ),
                   ]
